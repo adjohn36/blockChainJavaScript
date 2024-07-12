@@ -13,7 +13,7 @@ class Transaction {
         return SHA256(this.fromAddress + this.toAddress + this.amount).toString();
     }
 
-    signTransaction(singingKey) {
+    signTransaction(signingKey) {
         if(signingKey.getPublic("hex") !== this.fromAddress) {
             throw new Error("You cannot sign transactions for other wallets!");
         }
@@ -100,7 +100,10 @@ class Blockchain{
     addTransaction(transaction) {
         if(!transaction.fromAddress || !transaction.toAddress) {
             throw new Error("Transaction must include from and to address");
-            
+        }
+
+        if(!transaction.isValid()) {
+            throw new Error("Cannot add invalid transaction to chain");
         }
         this.pendingTransactions.push(transaction);
     }
